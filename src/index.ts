@@ -1,18 +1,11 @@
 import { httpServer } from './http_server';
 import { createWebSocketStream, WebSocketServer } from 'ws';
 import { down, left, mouse, right, up } from '@nut-tree/nut-js';
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
-// eslint-disable-next-line @typescript-eslint/no-var-requires
+import { printScreen } from './commands';
 
 const HTTP_PORT = 8181;
 
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 const wss = new WebSocketServer({ port: 8080, host: 'localhost' });
-//const nut =  new Nut();
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-ignore
 
 wss.on('connection', async function connection(ws: any) {
   console.log('WS is connect');
@@ -38,7 +31,8 @@ wss.on('connection', async function connection(ws: any) {
              */
     const [command, x, y, ...args] = msg.toString().split(' ');
     // console.log(msg.toString().split(' '));
-    //console.log(msg.toString());
+    console.log(msg.toString());
+    const position = await mouse.getPosition();
     switch (command) {
       case 'mouse_left':
         await mouse.move(left(parseInt(x)));
@@ -57,9 +51,22 @@ wss.on('connection', async function connection(ws: any) {
         stream.write(`mouse_down ${x} px`);
         break;
       case 'mouse_position':
-        const position = await mouse.getPosition();
-        const cmd = `mouse_position ${+position.x}px,${+position.y}px`;
+        const cmd = `mouse_position ${position.x},${position.y}`;
         stream.write(cmd);
+        break;
+      case 'draw_circle':
+
+        break;
+      case 'draw_square':
+        console.log('draw square', position);
+        break;
+      case 'draw_rectangle':
+        break;
+      case 'prnt_scrn':
+        const base64Image = await printScreen();
+        if(base64Image){
+          stream.write(`prnt_scrn ${base64Image}`);
+        }
         break;
       default:
         break;
