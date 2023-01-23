@@ -1,4 +1,4 @@
-import { mouse, Point, Region, screen } from '@nut-tree/nut-js';
+import { down, left, mouse, Point, Region, right, screen, up } from '@nut-tree/nut-js';
 import Jimp from 'jimp';
 //TODO: needed to fix problem with write-down part of screen
 
@@ -47,4 +47,24 @@ const drawCircle = async (position: Point, radius: number) => {
   }
   await mouse.drag(newPoint);
 };
-export {printScreen, drawCircle}
+
+const drawRectangle = async (position: Point, args: string) => {
+  const [width, height] = args;
+  const w = parseInt(width);
+  const h = parseInt(height);
+
+  await mouse.drag(left(h));
+  await mouse.drag(down(w));
+  await mouse.drag(right(h));
+  await mouse.drag(up(w));
+};
+
+const drawSquare = async (position: Point, args: string) => {
+  const w = parseInt(args);
+
+  await mouse.drag(left(w));
+  await mouse.drag(down(w));
+  await mouse.drag(right(w));
+  await mouse.drag(up(w));
+};
+export {printScreen, drawCircle, drawRectangle, drawSquare}

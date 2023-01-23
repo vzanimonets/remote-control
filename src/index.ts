@@ -1,7 +1,7 @@
 import { httpServer } from './http_server';
 import { createWebSocketStream, WebSocketServer } from 'ws';
-import {Button, down, left, mouse, right, up} from '@nut-tree/nut-js';
-import {drawCircle, printScreen} from './commands';
+import { down, left, mouse, right, up } from '@nut-tree/nut-js';
+import { drawCircle, drawRectangle, drawSquare, printScreen } from './commands';
 
 const HTTP_PORT = 8181;
 
@@ -26,7 +26,7 @@ wss.on('connection', async function connection(ws: any) {
                      draw_square [figure_length] - "s"
                      draw_rectangle [height][width] - "r"
              */
-    const [command, x, y, ...args] = msg.toString().split(' ');
+    const [command, ...x] = msg.toString().split(' ');
     // console.log(msg.toString().split(' '));
     console.log(msg.toString());
     const position = await mouse.getPosition();
@@ -52,12 +52,13 @@ wss.on('connection', async function connection(ws: any) {
         stream.write(cmd);
         break;
       case 'draw_circle':
-        await drawCircle(position,x);
+        await drawCircle(position, x);
         break;
       case 'draw_square':
-        console.log('draw square', position);
+        await drawSquare(position, x);
         break;
       case 'draw_rectangle':
+        await drawRectangle(position, x);
         break;
       case 'prnt_scrn':
         const base64Image = await printScreen(position);
