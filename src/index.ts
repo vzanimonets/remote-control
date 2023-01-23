@@ -1,7 +1,7 @@
 import { httpServer } from './http_server';
 import { createWebSocketStream, WebSocketServer } from 'ws';
-import { down, left, mouse, right, up } from '@nut-tree/nut-js';
-import { printScreen } from './commands';
+import {Button, down, left, mouse, right, up} from '@nut-tree/nut-js';
+import {drawCircle, printScreen} from './commands';
 
 const HTTP_PORT = 8181;
 
@@ -10,10 +10,7 @@ const wss = new WebSocketServer({ port: 8080, host: 'localhost' });
 wss.on('connection', async function connection(ws: any) {
   console.log('WS is connect');
   const stream = createWebSocketStream(ws, { encoding: 'utf8', decodeStrings: false });
-  //
-  // stream.on('data', async (data) => {
-  //   console.log(data.toString());
-  // });
+
   stream.on('data', async (msg: any) => {
     // Parse the message from JSON to object
     /*
@@ -55,7 +52,7 @@ wss.on('connection', async function connection(ws: any) {
         stream.write(cmd);
         break;
       case 'draw_circle':
-
+        await drawCircle(position,x);
         break;
       case 'draw_square':
         console.log('draw square', position);
@@ -63,8 +60,8 @@ wss.on('connection', async function connection(ws: any) {
       case 'draw_rectangle':
         break;
       case 'prnt_scrn':
-        const base64Image = await printScreen();
-        if(base64Image){
+        const base64Image = await printScreen(position);
+        if (base64Image) {
           stream.write(`prnt_scrn ${base64Image}`);
         }
         break;
