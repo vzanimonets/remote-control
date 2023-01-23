@@ -53,12 +53,15 @@ wss.on('connection', async function connection(ws: any) {
         break;
       case 'draw_circle':
         await drawCircle(position, x);
+        stream.write(command);
         break;
       case 'draw_square':
         await drawSquare(position, x);
+        stream.write(command);
         break;
       case 'draw_rectangle':
         await drawRectangle(position, x);
+        stream.write(command);
         break;
       case 'prnt_scrn':
         const base64Image = await printScreen(position);
